@@ -25,6 +25,7 @@ module hippo_aggregator::aggregator {
     const DEX_AUX: u8 = 8;
     const DEX_ANIMESWAP: u8 = 9;
     const DEX_CETUS: u8 = 9;
+    const DEX_FIRESWAP: u8 = 11;
 
     const HIPPO_CONSTANT_PRODUCT:u64 = 1;
     const HIPPO_PIECEWISE:u64 = 3;
@@ -239,6 +240,10 @@ module hippo_aggregator::aggregator {
             use cetus_amm::amm_router;
             let y_out = amm_router::swap<X, Y>(@hippo_aggregator, x_in);
             (option::none(),y_out)
+        }
+        else if (dex_type == DEX_FIRESWAP) {
+            use SwapDeployer::FireSwapPoolV1;
+            (option::none(), FireSwapPoolV1::swap_coins_for_coins<X, Y>(x_in))
         }
         else {
             abort E_UNKNOWN_DEX
